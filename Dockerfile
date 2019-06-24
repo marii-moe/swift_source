@@ -5,30 +5,11 @@ DEBIAN_FRONTEND=noninteractive apt-get -y install git cmake ninja-build clang py
 RUN adduser --disabled-password --gecos "" sftf
 USER sftf
 COPY --chown=sftf:sftf ./bazel.sh ./bazel.sh
-RUN chmod +x bazel.sh && ./bazel.sh --user
+RUN mkdir /home/sftf/swift-source/ && chmod +x bazel.sh && ./bazel.sh --user
 ENV PATH="$PATH:/home/sftf/bin"
-RUN mkdir /home/sftf/swift-source
-COPY --chown=sftf:sftf . /home/sftf/swift-source/
-#COPY --chown=sftf:sftf ./clang /home/sftf/swift-source/clang
-#COPY --chown=sftf:sftf ./clang-tools-extra /home/sftf/swift-source/clang-tools-extra
-#COPY --chown=sftf:sftf ./cmark /home/sftf/swift-source/cmark
-#COPY --chown=sftf:sftf ./compiler-rt /home/sftf/swift-source/compiler-rt
-#COPY --chown=sftf:sftf ./icu /home/sftf/swift-source/icu
-#COPY --chown=sftf:sftf ./indexstore-db /home/sftf/swift-source/indexstore-db
-#COPY --chown=sftf:sftf ./libcxx /home/sftf/swift-source/libcxx
-#COPY --chown=sftf:sftf ./llbuild /home/sftf/swift-source/llbuild
-#COPY --chown=sftf:sftf ./lldb /home/sftf/swift-source/lldb
-#COPY --chown=sftf:sftf ./llvm /home/sftf/swift-source/llvm
-#COPY --chown=sftf:sftf ./ninja /home/sftf/swift-source/ninja
-#COPY --chown=sftf:sftf ./sourcekit-lsp /home/sftf/swift-source/sourcekit-lsp
-#COPY --chown=sftf:sftf ./swift-corelibs-foundation /home/sftf/swift-source/swift-corelibs-foundation
-#COPY --chown=sftf:sftf ./swift-corelibs-libdispatch /home/sftf/swift-source/swift-corelibs-libdispatch
-#COPY --chown=sftf:sftf ./swift-corelibs-xctest /home/sftf/swift-source/swift-corelibs-xctest
-#COPY --chown=sftf:sftf ./swift-integration-tests /home/sftf/swift-source/swift-integration-tests
-#COPY --chown=sftf:sftf ./swiftpm /home/sftf/swift-source/swiftpm
-#COPY --chown=sftf:sftf ./swift-stress-tester /home/sftf/swift-source/swift-stress-tester
-#COPY --chown=sftf:sftf ./swift-syntax /home/sftf/swift-source/swift-syntax
-#COPY --chown=sftf:sftf ./swift-xcode-playground-support /home/sftf/swift-source/swift-xcode-playground-support
-#COPY --chown=sftf:sftf ./tensorflow /home/sftf/swift-source/tensorflow
-#COPY --chown=sftf:sftf ./tensorflow-swift-apis /home/sftf/swift-source/tensorflow-swift-apis
-#WORKDIR /home/sftf/swift-source/swift
+COPY --chown=sftf:sftf ./swift /home/sftf/swift-source/swift
+WORKDIR /home/sftf/swift-source/swift
+RUN utils/update-checkout -j 8 --clone --scheme tensorflow --skip-repository swift && \
+    utils/build-script -j 8 --enable-tensorflow --release-debuginfo || true
+COPY --chown=sftf:sftf ./startup.sh ./startup.sh
+CMD ["./startup.sh"]

@@ -2,19 +2,27 @@ version: '3'
 services:
   swift:
     build:
-      context: ./swift
+      context: ./
     image: swift_base
-    depends_on:
-     - swift_dep
     cap_add:
      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
-  swift_dep:
-    build:
-      context: .
-    image: swift_dep
-    cap_add:
-     - SYS_PTRACE
-    security_opt:
-      - seccomp:unconfined
+#    build:
+#      context: ./swift
+#    image: swift_base
+#    depends_on:
+#     - swift_dep
+#    cap_add:
+#     - SYS_PTRACE
+#    security_opt:
+#      - seccomp:unconfined
+#
+#  swift_dep:
+#    build:
+#      context: .
+#    image: swift_dep
+#    cap_add:
+#     - SYS_PTRACE
+#    security_opt:
+#      - seccomp:unconfined
