@@ -1,6 +1,6 @@
 version: '3'
 services:
-  swift:
+  swift-base:
     build:
       context: ./
     image: swift_base
@@ -8,6 +8,17 @@ services:
      - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
+  swift:
+    build:
+      context: ./swift
+      dockerfile: Dockerfile
+    depends_on:
+      - swift-base
+    cap_add:
+     - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    
 #    build:
 #      context: ./swift
 #    image: swift_base
